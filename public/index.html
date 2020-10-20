@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browser Primer</title>
+</head>
+
+<body id="body-id" myCoolAttribute="content!!!">
+  <noscript>Turn JS on, pleeease</noscript>
+  <h1>Browser render</h1>
+  <div id="root">
+  </div>
+
+  <script type="module">
+    import {renderPage } from "../src/index.js";
+
+      renderPage();
+    </script>
+</body>
+
+</html>
