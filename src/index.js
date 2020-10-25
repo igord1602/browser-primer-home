@@ -117,70 +117,102 @@ const nodesHierarchy = {
   ],
 };
 
-function renderTree(Tree) {
+const data = [
+  {
+    label: "data 001",
+    level: "001",
+    children: [],
+  },
+  {
+    label: "data 002",
+    level: "002",
+    children: [],
+  },
+  {
+    label: "data 003",
+    level: "003",
+    children: [],
+  },
+  {
+    label: "data 004",
+    level: "004",
+    children: [],
+  },
+];
+
+function createLiElement(text) {
+  const li = document.createElement("li");
+  li.innerHTML = text;
+  return li;
+}
+
+function renderTreeToList(treeArray) {
+  const list = document.createElement("ol");
+
+  treeArray
+    .map((node) => `${node.label} ${node.level}`)
+    .map((item) => createLiElement(item))
+    .forEach((liElement) => list.append(liElement));
+
+  return list;
+}
+
+function renderTree(treeArray) {
+  if (treeArray.lenght === 0) return null;
   const rootUlElement = document.createElement("ul");
-
-  const liEventTarget = document.createElement("li");
-  rootUlElement.append(liEventTarget);
-  liEventTarget.innerHTML = "EventTarget";
-
-  const ulEventTarget = document.createElement("ul");
-  rootUlElement.append(ulEventTarget);
-
-  const liNode = document.createElement("li");
-  ulEventTarget.append(liNode);
-  liNode.innerHTML = "Node";
-
-  const ulNode = document.createElement("ul");
-  ulEventTarget.append(ulNode);
-
-  const liText = document.createElement("li");
-  ulNode.append(liText);
-  liText.innerHTML = "Text";
-
-  const liComment = document.createElement("li");
-  ulNode.append(liComment);
-  liComment.innerHTML = "Comment";
-
-  const liElement = document.createElement("li");
-  ulNode.append(liElement);
-  liElement.innerHTML = "Element";
-
-  const ulElement = document.createElement("ul");
-  ulNode.append(ulElement);
-
-  const liSVGElement = document.createElement("li");
-  ulElement.append(liSVGElement);
-  liSVGElement.innerHTML = "SVGElement";
-
-  const liHTMLElement = document.createElement("li");
-  ulElement.append(liHTMLElement);
-  liHTMLElement.innerHTML = "HTMLElement";
-
-  const ulHTMLElement = document.createElement("ul");
-  liHTMLElement.append(ulHTMLElement);
-
-  const liHTMLInputElement = document.createElement("li");
-  ulHTMLElement.append(liHTMLInputElement);
-  liHTMLInputElement.innerHTML = "HTMLInputElement";
-
-  const liBodyElement = document.createElement("li");
-  ulHTMLElement.append(liBodyElement);
-  liBodyElement.innerHTML = "HTMLBodyElement";
-
-  const liAnchorElement = document.createElement("li");
-  ulHTMLElement.append(liAnchorElement);
-  liAnchorElement.innerHTML = "HTMLAnchorElement";
-
-  // conver tree into elements
+  treeArray.forEach((node) => {
+    const liElement = document.createElement("li");
+    liElement.innerHTML = node.label;
+    rootUlElement.append(liElement);
+    const subTree = renderTree(node.children);
+    if (subTree !== null) rootUlElement.append(subTree);
+  });
   return rootUlElement;
 }
 
+const complexArray = [1, 2, 3, [4, 5, 6, [7, 8, 9], 10, [11, 12]]];
+
+function flattenArray(array) {
+  let result = [];
+  array.forEach((item) => {
+    if (Array.isArray(item)) {
+      result = [...result, ...flattenArray(item)];
+    } else {
+      result = [...result, item];
+    }
+  });
+
+  return result;
+}
+
+const DOMmodule = DOMArray();
+
+function DOMArray() {
+  const DOMbrowserTree = Object.values(browserTree);
+  const DOMnodesHierarchy = Object.values(nodesHierarchy);
+  const result = [...DOMbrowserTree, ...DOMnodesHierarchy];
+
+  return result;
+}
+
+function renderArray(array) {
+  const p = document.createElement("p");
+  p.innerHTML = JSON.stringify(array);
+
+  return p;
+}
+
 export function renderPage() {
-  const browserTreeList = renderTree(browserTree);
-  const nodesHierarchyList = renderTree(nodesHierarchy);
+  const tree = renderTree([browserTree, nodesHierarchy]);
+  const list = renderTreeToList(data);
 
   const rootDiv = document.getElementById("root");
-  rootDiv.append(browserTreeList);
-  rootDiv.append(nodesHierarchyList);
+  if (tree !== null) rootDiv.append(tree);
+  if (list !== null) rootDiv.append(list);
+
+  const flatArray = flattenArray(complexArray);
+  rootDiv.append(renderArray(flatArray));
+
+  const flatDOMArray = flattenArray(DOMmodule);
+  rootDiv.append(renderArray(flatDOMArray));
 }
