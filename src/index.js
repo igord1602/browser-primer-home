@@ -174,11 +174,11 @@ const complexArray = [1, 2, 3, [4, 5, 6, [7, 8, 9], 10, [11, 12]]];
 
 function flattenArray(array) {
   let result = [];
-  array.forEach((item) => {
-    if (Array.isArray(item)) {
-      result = [...result, ...flattenArray(item)];
+  array.forEach((values) => {
+    if (Array.isArray(values)) {
+      result = [...result, ...flattenArray(values)];
     } else {
-      result = [...result, item];
+      result = [...result, values];
     }
   });
 
